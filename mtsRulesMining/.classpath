@@ -2,5 +2,13 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="lib" path="libs/commons-beanutils-1.8.3.jar"/>
+	<classpathentry kind="lib" path="libs/commons-lang-2.6.jar"/>
+	<classpathentry kind="lib" path="libs/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="libs/httpclient-4.5.2.jar"/>
+	<classpathentry kind="lib" path="libs/httpcore-4.4.4.jar"/>
+	<classpathentry kind="lib" path="libs/httpmime-4.5.2.jar"/>
+	<classpathentry kind="lib" path="libs/junit-4.10.jar"/>
+	<classpathentry kind="lib" path="libs/poi-3.15.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
