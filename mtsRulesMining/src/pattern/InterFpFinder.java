@@ -64,8 +64,8 @@ public class InterFpFinder {
 	}
 
 	/***
-	 * Filter the interFps, for each interFp, check whether the first and the last block is from the
-	 * same time series. If so, then filter the overlapped position.
+	 * Filter the interFps, for each interFp, check whether the first and the last block is from the same time series.
+	 * If so, then filter the overlapped position.
 	 * 
 	 * @param interFps
 	 */
@@ -77,11 +77,11 @@ public class InterFpFinder {
 			} else if (interFp.firstBlock().getTimeSeries() == interFp.lastBlock().getTimeSeries()) {
 				List<Position> retainedPositions = new ArrayList<>();
 				for (Position position : interFp.getPositions()) {
-					//TODO NOTE:此处有个小问题，暂时没考虑是否需要考虑这个问题。
-					//此处使用firstBlock的position，根据start去获取对应的位置pos。
-					//而这个pos实际是cluster合并后的位置之一，可能实际的结束点可能小于pos.end。
-					//通时还可能聚类内有多个模式的开始区间都是pos.start，所以即使是选择一个也不知道选择哪个模式对应的结束点。
-					//当前就按照合并的pos的结束点进行判断。（本质上会有不小误差估计）
+					// TODO NOTE:此处有个小问题，暂时没考虑是否需要考虑这个问题。
+					// 此处使用firstBlock的position，根据start去获取对应的位置pos。
+					// 而这个pos实际是cluster合并后的位置之一，可能实际的结束点可能小于pos.end。
+					// 通时还可能聚类内有多个模式的开始区间都是pos.start，所以即使是选择一个也不知道选择哪个模式对应的结束点。
+					// 当前就按照合并的pos的结束点进行判断。（本质上会有不小误差估计）
 					Position pos = interFp.firstBlock().getPositionFromStart(position.getStart());
 					if (pos.getEnd() < position.getEnd()) {
 						retainedPositions.add(position);
@@ -98,7 +98,18 @@ public class InterFpFinder {
 	 * @param interPattern1
 	 * @param interPattern2
 	 */
+	int c1 = 0;
+	int c2 = 0;
+
 	private List<Position> generatedPositions(InterPattern interPattern1, InterPattern interPattern2) {
+		c1++;
+		if (c1 % 10000 == 0) {
+			System.out.print(++c2);
+			if (c2 == 10) {
+				c1 = c2 = 0;
+				System.out.println();
+			}
+		}
 		if (interPattern1.getBlockNumber() != interPattern2.getBlockNumber()) {
 			log.error("异常情况！俩个interPattern的blockNumber不相等！");
 			return null;

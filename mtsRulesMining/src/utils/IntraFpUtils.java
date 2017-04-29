@@ -39,7 +39,7 @@ public class IntraFpUtils {
 		log.info("start---start---start---start---start---start---start---start---");
 		List<Map<IntraPattern, IntraPattern>> intraFPss = new ArrayList<Map<IntraPattern, IntraPattern>>();
 		for (int i = 0; i < discretizedDatas.length; i++) {
-			Map<IntraPattern, IntraPattern> intraFPs = new IntraFpFinder(discretizedDatas[i], setting.getMinSupportCount(), setting.getWindowSize4IntraFP()).run();
+			Map<IntraPattern, IntraPattern> intraFPs = new IntraFpFinder(discretizedDatas[i], setting.getMinSupportCount4IntraFp(), setting.getWindowSize4IntraFP()).run();
 			// merge overlap position list
 			mergedPositionList(intraFPs);
 			intraFPss.add(intraFPs);
@@ -56,7 +56,7 @@ public class IntraFpUtils {
 		log.info("start---start---start---start---start---start---start---start---");
 		List<Map<IntraPattern, IntraPattern>> intraFPss = new ArrayList<Map<IntraPattern, IntraPattern>>();
 		for (int i = 0; i < discretizedDatas.length; i++) {
-			Map<IntraPattern, IntraPattern> intraFPs = new IntraClosedFpFinder(discretizedDatas[i], setting.getMinSupportCount(), setting.getWindowSize4IntraFP()).run();
+			Map<IntraPattern, IntraPattern> intraFPs = new IntraClosedFpFinder(discretizedDatas[i], setting.getMinSupportCount4IntraFp(), setting.getWindowSize4IntraFP()).run();
 			// merge overlap position list
 			mergedPositionList(intraFPs);
 			intraFPss.add(intraFPs);
@@ -73,7 +73,7 @@ public class IntraFpUtils {
 		log.info("start---start---start---start---start---start---start---start---");
 		List<Map<IntraPattern, IntraPattern>> intraFPss = new ArrayList<Map<IntraPattern, IntraPattern>>();
 		for (int i = 0; i < discretizedDatas.length; i++) {
-			Map<IntraPattern, IntraPattern> intraFPs = new IntraMaxFpFinder(discretizedDatas[i], setting.getMinSupportCount(), setting.getWindowSize4IntraFP()).run();
+			Map<IntraPattern, IntraPattern> intraFPs = new IntraMaxFpFinder(discretizedDatas[i], setting.getMinSupportCount4IntraFp(), setting.getWindowSize4IntraFP()).run();
 			// merge overlap position list
 			mergedPositionList(intraFPs);
 			intraFPss.add(intraFPs);
@@ -167,8 +167,8 @@ public class IntraFpUtils {
 			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(outPutFilePath))));
 			bw.write("Fps size: " + intraFPs.size() + System.lineSeparator());
 			for (IntraPattern intraFp : sortedIntraFPs) {
-				bw.write(intraFp + ", support: " + intraFp.getPositions().size() + System.lineSeparator());
-				bw.write("\tentroy: " + EntropyFunctions.entropy(intraFp.getPattern()) + ", entroyWithOrder: " + EntropyFunctions.entropyWithOrder(intraFp.getPattern()) + System.lineSeparator());
+				bw.write(intraFp + ", support: " + intraFp.getPositions().size());
+				bw.write("\t,entroy: " + EntropyFunctions.entropy(intraFp.getPattern()) + ", entroyWithOrder: " + EntropyFunctions.entropyWithOrder(intraFp.getPattern()) + System.lineSeparator());
 			}
 			bw.flush();
 			bw.close();

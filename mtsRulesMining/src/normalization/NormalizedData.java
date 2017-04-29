@@ -10,6 +10,7 @@ import discretization.DiscretizedData.DiscretizationType;
  */
 public class NormalizedData {
 
+	// indexed from 0
 	private int seriesNumber;
 
 	private double[] result;

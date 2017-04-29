@@ -4,9 +4,9 @@ import org.junit.Test;
 
 import discretization.DiscretizedData.DiscretizationType;
 import pattern.filter.PatternFilter;
+import utils.RunningUtils;
 import utils.RunningUtils.Setting;
 import utils.RunningUtils.Setting.IntraFpType;
-import utils.RunningUtils;
 
 /***
  * This is the test set on AirQualityUCI data.
@@ -30,14 +30,14 @@ public class Test151108KL20 {
 	// step size used for discretization
 	private int step = 1;
 	// levelThresHold used for discretization
-	private double levelThresHold = 0.0001;
+	private double levelThresHold = 0.01;
 
 	// parms for intraFp
 	private Integer windowSize4IntraFP = 10;
 
 	// parms for interFp
 	private Integer minTimeInterval = 1;
-	private Integer maxTimeInterval = 20;
+	private Integer maxTimeInterval = 5;
 
 	// max 12 column
 	private int maxBlocks = 12;
@@ -49,74 +49,11 @@ public class Test151108KL20 {
 	private double minConf = 0.9;
 
 	@Test
-	public void test1() {
-		outputFileDir = outputDirPrefix + "1";
-
-		minSupportCount = 20;
-		minConf = 0.8;
-
-		Setting setting =
-				// get current setting
-				getCurrentSetting()
-						// set intraFp type
-						.setIntraFpType(IntraFpType.closedFp)
-						// set discretizationType
-						.setDefaultDiscretizationType(DiscretizationType.upDownLevel)
-						// set pattern filter
-						.setPatternFilter(
-								// FilterDescription (for log)
-								"EntroyWithOrder(entroy >= 1.5)",
-								// The filter
-								(PatternFilter.entropyFilter(
-										// Entroy function
-										EntropyFunctions::entropyWithOrder,
-										// The entroy limit value
-										1.5)//
-								)//
-
-				);
-
-		RunningUtils.run(setting);
+	public void test0() {
+		
 
 	}
 
-	@Test
-	public void test2() {
-		outputFileDir = outputDirPrefix + "2";
-
-		minSupportCount = 20;
-		minConf = 0.9;
-
-		Setting setting =
-				// get current setting
-				getCurrentSetting()
-						// set intraFp type
-						.setIntraFpType(IntraFpType.maxFp)
-						// set discretizationType
-						.setDefaultDiscretizationType(DiscretizationType.upDownLevel)
-						// set pattern filter
-						.setPatternFilter(
-								// FilterDescription (for log)
-								"LimitSupport(<= 1.6)",
-								// The filter
-								(PatternFilter.supportFilter(200))//
-				);
-
-		RunningUtils.run(setting);
-
-	}
-
-	/***
-	 * Test the entroy of some pattern
-	 */
-	@Test
-	public void entroyTest() {
-		//
-		String[] patterns = new String[] { "si:ud", "si:uudd", "si:lldd","si:l" };
-		for (String p : patterns) {
-			System.out.println(p + ": " + EntropyFunctions.entropy(p) + ", " + EntropyFunctions.entropyWithOrder(p));
-		}
-	}
 
 	/***
 	 * Construct the setting according current settings and return the setting object.

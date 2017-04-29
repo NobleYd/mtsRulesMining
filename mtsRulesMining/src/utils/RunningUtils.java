@@ -74,11 +74,12 @@ public class RunningUtils {
 		private Map<Integer, DiscretizationType> discretizationTypes = new HashMap<Integer, DiscretizationType>();
 
 		// common for intraFp and interFp
+		private int minSupportCount4IntraFp;
 		private int minSupportCount;
 
 		// for intraFp
 		private IntraFpType intraFpType = IntraFpType.closedFp;
-		private Integer windowSize4IntraFP;
+		private Integer windowSize4IntraFp;
 		private String filterDescription = "defaultFilter:NoFilter";
 		private PatternFilter patternFilter = PatternFilter.defaultFilter();
 
@@ -98,6 +99,10 @@ public class RunningUtils {
 		// for rules generate
 		private double minConf;
 
+		// Information below are not for setting but for communication.
+		// Common information
+		public long dataNumber;
+
 		/***
 		 * IntraFpType
 		 */
@@ -113,10 +118,11 @@ public class RunningUtils {
 		public Setting(int step, Integer windowSize4IntraFP, Integer minTimeInterval, Integer maxTimeInterval, int maxBlocks, int minSupportCount, double minConf) {
 			super();
 			this.step = step;
-			this.windowSize4IntraFP = windowSize4IntraFP;
+			this.windowSize4IntraFp = windowSize4IntraFP;
 			this.minTimeInterval = minTimeInterval;
 			this.maxTimeInterval = maxTimeInterval;
 			this.maxBlocks = maxBlocks;
+			this.minSupportCount4IntraFp = minSupportCount;
 			this.minSupportCount = minSupportCount;
 			this.minConf = minConf;
 		}
@@ -194,6 +200,15 @@ public class RunningUtils {
 			return this;
 		}
 
+		public int getMinSupportCount4IntraFp() {
+			return minSupportCount4IntraFp;
+		}
+
+		public Setting setMinSupportCount4IntraFp(int minSupportCount4IntraFp) {
+			this.minSupportCount4IntraFp = minSupportCount4IntraFp;
+			return this;
+		}
+
 		public IntraFpType getIntraFpType() {
 			return intraFpType;
 		}
@@ -204,11 +219,11 @@ public class RunningUtils {
 		}
 
 		public Integer getWindowSize4IntraFP() {
-			return windowSize4IntraFP;
+			return windowSize4IntraFp;
 		}
 
 		public Setting setWindowSize4IntraFP(Integer windowSize4IntraFP) {
-			this.windowSize4IntraFP = windowSize4IntraFP;
+			this.windowSize4IntraFp = windowSize4IntraFP;
 			return this;
 		}
 
@@ -306,7 +321,7 @@ public class RunningUtils {
 					+ "levelThresHold=" + levelThresHold + System.lineSeparator()//
 					+ "minSupportCount=" + minSupportCount + System.lineSeparator()//
 					+ "intraFpType=" + intraFpType + System.lineSeparator()//
-					+ "windowSize4IntraFP=" + windowSize4IntraFP + System.lineSeparator()//
+					+ "windowSize4IntraFP=" + windowSize4IntraFp + System.lineSeparator()//
 					+ "filterDescription=" + filterDescription + System.lineSeparator()//
 					+ ((clusterMethod != null && distanceFunctionForClustering != null)
 							? ("clusterMethod:" + clusterMethod + System.lineSeparator() //

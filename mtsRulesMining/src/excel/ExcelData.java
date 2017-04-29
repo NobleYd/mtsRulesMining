@@ -95,6 +95,7 @@ public class ExcelData {
 			// read titles
 			for (int col = 0; col < columnNumber; col++) {
 				titles[col] = titleRow.getCell(col).getStringCellValue();
+				data[col][0] = 0.0;
 			}
 			// read data
 			for (int row = 1; row < rowNumber; row++) {

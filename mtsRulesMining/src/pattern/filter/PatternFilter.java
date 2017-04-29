@@ -15,7 +15,11 @@ public interface PatternFilter {
 		return (p, s) -> true;
 	}
 
-	static PatternFilter supportFilter(int maxSupport) {
+	static PatternFilter minSupportFilter(int minSupport) {
+		return (String p, int s) -> s >= minSupport;
+	}
+
+	static PatternFilter maxSupportFilter(int maxSupport) {
 		return (String p, int s) -> s <= maxSupport;
 	}
 

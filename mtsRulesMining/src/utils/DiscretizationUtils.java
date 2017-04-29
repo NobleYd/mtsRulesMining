@@ -32,7 +32,8 @@ public class DiscretizationUtils {
 
 		// Set threshold according the actual min and max value(no zero min)
 		for (int i = 1; i < normalizedDatas.length; i++) {
-			normalizedDatas[i].setThreshold(setting.getLevelThresHold() * (normalizedDatas[i].getMaxValue() - normalizedDatas[i].getNoZeroMinValue()) / normalizedDatas[i].getMaxValue());
+//			normalizedDatas[i].setThreshold(setting.getLevelThresHold() * (normalizedDatas[i].getMaxValue() - normalizedDatas[i].getNoZeroMinValue()) / normalizedDatas[i].getMaxValue());
+			normalizedDatas[i].setThreshold(setting.getLevelThresHold());
 		}
 
 		outputDiscretizationInfo(normalizedDatas, setting.getOutputFileDir());

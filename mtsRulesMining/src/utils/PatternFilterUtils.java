@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
@@ -13,7 +14,11 @@ import java.util.TreeSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import cluster.AbstractCluster;
+import cluster.AbstractClusterSet;
+import cluster.AbstractDataObject;
 import pattern.IntraPattern;
+import pattern.Position;
 import pattern.filter.PatternFilter;
 import test.EntropyFunctions;
 
@@ -22,8 +27,7 @@ public class PatternFilterUtils {
 	private static Log log = LogFactory.getLog(PatternFilterUtils.class);
 
 	/***
-	 * Return the retained intraFps by the filter, and output the information to the given
-	 * directory.
+	 * Return the retained intraFps by the filter, and output the information to the given directory.
 	 * 
 	 * @param intraFPss
 	 *            intraFPss[i] = intraFPs from time series i. <br/>
@@ -50,8 +54,7 @@ public class PatternFilterUtils {
 	}
 
 	/***
-	 * Return the retained/removed intraFps by the filter, and output the information to the given
-	 * directory.
+	 * Return the retained/removed intraFps by the filter, and output the information to the given directory.
 	 * 
 	 * @param intraFPs
 	 * @param filter
@@ -81,7 +84,7 @@ public class PatternFilterUtils {
 		return retainedAndRemovedIntraFps;
 
 	}
-	
+
 	/***
 	 * Output sorted intraFps to the given directory with the given fileName.
 	 * 
@@ -98,7 +101,7 @@ public class PatternFilterUtils {
 		try {
 			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(outPutFilePath))));
 			bw.write("Fps size: " + intraFPs.size() + System.lineSeparator());
-			for (IntraPattern intraFp: sortedIntraFPs) {
+			for (IntraPattern intraFp : sortedIntraFPs) {
 				bw.write(intraFp + ", support: " + intraFp.getPositions().size() + System.lineSeparator());
 				bw.write("\tentroy: " + EntropyFunctions.entropy(intraFp.getPattern()) + ", entroyWithOrder: " + EntropyFunctions.entropyWithOrder(intraFp.getPattern()) + System.lineSeparator());
 			}
@@ -108,6 +111,21 @@ public class PatternFilterUtils {
 			log.error("PatternFilterUtils.outputIntraFp() failed.");
 			e.printStackTrace();
 		}
+	}
+
+	public static List<? extends AbstractClusterSet<? extends AbstractCluster<IntraPattern, ? extends AbstractDataObject<IntraPattern>>>> filteredClusterSets(
+			List<? extends AbstractClusterSet<? extends AbstractCluster<IntraPattern, ? extends AbstractDataObject<IntraPattern>>>> clusterSets, PatternFilter minSupportFilter, String outputFileDir) {
+		for (AbstractClusterSet<? extends AbstractCluster<IntraPattern, ? extends AbstractDataObject<IntraPattern>>> clusterSet : clusterSets) {
+			Iterator<? extends AbstractCluster<IntraPattern, ? extends AbstractDataObject<IntraPattern>>> iterator = clusterSet.iterator();
+			while (iterator.hasNext()) {
+				AbstractCluster<IntraPattern, ? extends AbstractDataObject<IntraPattern>> cluster = iterator.next();
+				if (!minSupportFilter.filter(null, ((List<Position>) cluster.getInfo()).size())) {
+					iterator.remove();
+				}
+			}
+		}
+		ClusterUtils.outputClusterSets(clusterSets, outputFileDir, "RetainedClusterSets.txt");
+		return clusterSets;
 	}
 
 }

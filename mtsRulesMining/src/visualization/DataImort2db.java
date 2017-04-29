@@ -1,15 +1,12 @@
 package visualization;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import excel.ExcelData;
 import utils.HttpUtils;
-
-// 图表查看地址
-// http://localhost:10010/stats_item/chart/1.jhtml
-// 0:1-23
-// 同时查看23条：http://localhost:10010/stats_item/chart/1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23.jhtml
 
 public class DataImort2db {
 
@@ -19,40 +16,55 @@ public class DataImort2db {
 
 	private static final String stats_item_save_url = site_home_url + "stats_item/async_save.jhtml";
 
-	// 使用1-23作为统计项ID(对应title分别为0-22)
-	// statsItemId = 1,2,3,....,22,23;
-
 	// excel 数据 double[][]
 	// double[col][row]
-	// col:0-22
-	// row:0为名称标题
-	// row:1-xxx:实际数据
-
+	// col:0 indexed
+	// row:the value in 0 is 0.0(No Meanning)
+	// row:1 indexed
 	public static void main(String[] args) throws Exception {
-		//http://localhost:10010/stats_item/chart/169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185.jhtml
-		// Long partnerId = 3L;
-		// String url = import2db(partnerId, "output/2/NormalizedDatas.xls", 8640);
-		// System.out.println(url);
 		
-		//http://localhost:10010/stats_item/chart/186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,201,202.jhtml
-//		Long partnerId = 4L;
-//		String url = import2db(partnerId, "output/2/NormalizedDatas.xls", 8640);
-//		System.out.println(url);
-//		
-		
-		//http://localhost:10010/stats_item/chart/203,204,205,206,207,208,209,210,211,212,213,214,215.jhtml
-//		Long partnerId = 5L;
-//		String url = import2db(partnerId, "output/11/NormalizedDatas.xls", 9350);
-//		System.out.println(url);
-		
-		//http://localhost:10010/stats_item/chart/216,217,218,219,220,221,222,223,224,225,226,227,228.jhtml
-		Long partnerId = 6L;
-		String url = import2db(partnerId, "output/11/NormalizedDatas.xls", 500);
-		System.out.println(url);
-		
-		
+		/***
+		 * 公倍数。
+		 * 
+		 * 2 3 4 6 8 --> 24 <br/>
+		 * 2 3 4 5 6 8 10 --> 120 <br/>
+		 * 2 3 4 5 6 7 8 10 --> 840 <br/>
+		 * 2 3 4 5 6 7 8 9 10 --> ...eg: 1890,9000,... <br/>
+		 */
+
+		/**
+		 * AirQualityUCI <br/>
+		 * http://localhost:10010/stats_item/chart/1,2,3,4,5,6,7,8,9,10,11,12.jhtml
+		 */
+		// System.out.println(import2db(1L, "output/AirQualityUCI/NormalizedDatas.xls", null));
+
+		/**
+		 * 151108KL20: 来自薛瑞东的数据，原始几十列，当前以及修剪去一部分。<br/>
+		 * http://localhost:10010/stats_item/chart/13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29.jhtml
+		 */
+		// System.out.println(import2db(2L, "output/151108KL20/NormalizedDatas.xls", null));
+
+		/**
+		 * stackData: 小强给的股票数据。<br/>
+		 * http://localhost:10010/stats_item/chart/30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129.jhtml
+		 */
+		//System.out.println(import2db(3L, "output/StockData/NormalizedDatas.xls", null));
+
+		/** testExcel: 来自薛瑞东的数据1，无原始，只有已标准化的数据。 */
+		// System.out.println(import2db(4L, "output/testExcel/NormalizedDatas.xls", null));
 	}
 
+	/***
+	 * 导入数据到数据库中。
+	 * 
+	 * @param partnerId
+	 *            会员ID。此处用于标识数据集。
+	 * @param excelFilePath
+	 *            数据excel位置。
+	 * @param importNumber
+	 *            导入数据数量。null表示全部导入。
+	 * @return 返回查看数据图表的路径。
+	 */
 	public static String import2db(Long partnerId, String excelFilePath, Integer importNumber) throws Exception {
 		String statsIds = "";
 
@@ -96,11 +108,15 @@ public class DataImort2db {
 			// Long statsItemId = startId + i
 			params.put("statsItemId", startId + i);
 			// Firt row is for title, start with the second row.
-			for (int j = 1; j < datas[i].length && ((importNumber == null) || (importNumber != null && j < importNumber)); j++) {
+			for (int j = 1; j < datas[i].length && ((importNumber == null) || (importNumber != null && j <= importNumber)); j++) {
 				// Long dataTime = rowNumber
 				// numberValue = datas[i][j]
-				params.put("dataTime", j);
-				params.put("numberValue", datas[i][j]);
+				// Note: in our programm, the data is indexed from 0, while it is always 0.0 for any
+				// datas[i][0]. So the loop is start from j = 1.
+				// But, the stats system's data is set to start from 0, which is for convinent.
+				params.put("dataTime", j - 1);
+				// Note: each value plus i, so the chart will be more easy for readers to see.
+				params.put("numberValue", datas[i][j] + i);
 				String ans = HttpUtils.post(data_submit_url, params);
 				if (ans == null || !ans.contains("成功")) {
 					System.out.println("data[" + i + "][" + j + "]添加失败[Failure]");
@@ -109,9 +125,6 @@ public class DataImort2db {
 				}
 			}
 		}
-
 		return stats_chart_url.replace("STATS_IDS", statsIds);
-
 	}
-
 }

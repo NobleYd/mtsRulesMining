@@ -122,12 +122,10 @@ public class ClusterUtils {
 	/***
 	 * Return the interFpss, from the clusterSets. <br/>
 	 *
-	 * What is need to be noted is that, int the return type List<Map<IntraPattern, IntraPattern>>.
-	 * <br/>
+	 * What is need to be noted is that, int the return type List<Map<IntraPattern, IntraPattern>>. <br/>
 	 * 
 	 * Note:<br/>
-	 * The key and value of type IntraPattern, in this method is actually a type of
-	 * IntraPatternCluster.
+	 * The key and value of type IntraPattern, in this method is actually a type of IntraPatternCluster.
 	 * 
 	 * @param clusterSets
 	 * @param setting
@@ -140,13 +138,14 @@ public class ClusterUtils {
 			Map<IntraPattern, IntraPattern> fps = new HashMap<IntraPattern, IntraPattern>();
 			for (AbstractCluster<IntraPattern, ? extends AbstractDataObject<IntraPattern>> cluster : clusterSet) {
 				String centerPattern = cluster.getCenterObject().getValue().getPattern();
-				// 此处如果是HierarchicalClustering，使用最长模式作为代表。
+				// 此处如果是HierarchicalClustering，使用最短模式作为代表。--->这个选择没什么理由，因为就是个代表，然后结合聚类使用的距离，DTW距离，那么选择最短的模式就是最合理的。
 				if (cluster instanceof cluster.hierarchical.Cluster) {
 					int length = centerPattern.length();
 					Iterator<? extends AbstractDataObject<IntraPattern>> iterator = cluster.getDataObjects().iterator();
 					while (iterator.hasNext()) {
 						AbstractDataObject<IntraPattern> obj = iterator.next();
 						if (obj.getValue().getPattern().length() < length) {
+							length = obj.getValue().getPattern().length();
 							centerPattern = obj.getValue().getPattern();
 						}
 					}
@@ -180,6 +179,7 @@ public class ClusterUtils {
 			for (AbstractCluster<IntraPattern, ? extends AbstractDataObject<IntraPattern>> cluster : clusterSet) {
 				bw.write("ClusterNo: " + cluster.getClusterNo() + ", contains " + cluster.getDataObjects().size() + " objects, merged support: " + ((List<Position>) (cluster.getInfo())).size()
 						+ System.lineSeparator());
+				bw.write("\t" + cluster.getDataObjects().stream().map(e -> e.getValue().getPattern()).collect(Collectors.toList()) + System.lineSeparator());
 				bw.write("\t" + ((List<Position>) (cluster.getInfo())) + System.lineSeparator());
 				for (AbstractDataObject<IntraPattern> obj : cluster.getDataObjects()) {
 					bw.write("\t" + obj.getValue() + System.lineSeparator());
@@ -201,7 +201,7 @@ public class ClusterUtils {
 	 * @param outputFileDir
 	 * @param fileName
 	 */
-	private static void outputClusterSets(List<? extends AbstractClusterSet<? extends AbstractCluster<IntraPattern, ? extends AbstractDataObject<IntraPattern>>>> clusterSets, String outputFileDir,
+	public static void outputClusterSets(List<? extends AbstractClusterSet<? extends AbstractCluster<IntraPattern, ? extends AbstractDataObject<IntraPattern>>>> clusterSets, String outputFileDir,
 			String fileName) {
 		String outPutFilePath = outputFileDir.endsWith("/") ? outputFileDir : outputFileDir + "/";
 		outPutFilePath = outPutFilePath + fileName;
@@ -210,7 +210,7 @@ public class ClusterUtils {
 			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(outPutFilePath))));
 			bw.write("TimeSeries number: " + clusterSets.size() + System.lineSeparator());
 			for (int i = 0; i < clusterSets.size(); i++) {
-				bw.write("Time series: " + clusterSets.get(i).getId() + System.lineSeparator());
+				bw.write("Time series: " + clusterSets.get(i).getId() + ", ClusterSet size: " + clusterSets.get(i).size() + System.lineSeparator());
 				for (AbstractCluster<IntraPattern, ? extends AbstractDataObject<IntraPattern>> cluster : clusterSets.get(i)) {
 					bw.write("\tClusterNo: " + cluster.getClusterNo() + ", contains " + cluster.getDataObjects().size() + " objects, merged support: " + ((List<Position>) (cluster.getInfo())).size()
 							+ System.lineSeparator());

@@ -75,7 +75,7 @@ public abstract class AbstractDataObject<T> {
 
 	@Override
 	public String toString() {
-		return "(id: " + id + ", value: " + value + ")";
+		return this.value.toString();
 	}
 
 }

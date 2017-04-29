@@ -67,7 +67,7 @@ public class DiscretizedData {
 		if (DiscretizationType.zeroOne.equals(this.discretizationType)) {
 			for (int i = step; i < data.length; i += step) {
 				// data[i]
-				if (0.5 > data[i]) {// zero
+				if (0.5 > avg(data, i - step + 1, i)) {// zero
 					sb.append(alaphabet01[ZERO]);
 				} else {// one
 					sb.append(alaphabet01[ONE]);
@@ -75,31 +75,52 @@ public class DiscretizedData {
 			}
 		} else if (DiscretizationType.upDownLevel.equals(this.discretizationType)) {
 			double value = data[0];
+			double valueNew = 0.0;
 			for (int i = step; i < data.length; i += step) {
-				if (threshold >= Math.abs(value - data[i])) {// level
+				valueNew = avg(data, i - step + 1, i);
+				if (threshold >= Math.abs(valueNew - value)) {// level
 					sb.append(alaphabetUDL[LEVEL]);
-				} else if (value < data[i]) {// up
+				} else if (value < valueNew) {// up
 					sb.append(alaphabetUDL[UP]);
-				} else if (value > data[i]) {// down
+				} else if (value > valueNew) {// down
 					sb.append(alaphabetUDL[DOWN]);
 				}
-				value = data[i];
+				value = valueNew;
 			}
 		} else {
 			// valueInterval
 			int index = -1;
 			for (int i = step; i < data.length; i += step) {
 				// data[i]
-				if (1.0 == data[i]) {
+				double valueNew = avg(data, i - step + 1, i);
+				if (1.0 == valueNew) {
 					sb.append(alaphabetValueInterval[9]);
 				} else {
-					index = ((int) (data[i] * 10)) % 10;
+					index = ((int) (valueNew * 10)) % 10;
 					sb.append(alaphabetValueInterval[index]);
 				}
 			}
 		}
 		result = sb.toString();
 		return this;
+	}
+
+	/***
+	 * 求data[from,to]的均值。
+	 * 
+	 * @param data
+	 * @param from
+	 *            inclusive
+	 * @param to
+	 *            inclusive
+	 */
+	public static double avg(double[] data, int from, int to) {
+		int num = to - from + 1;
+		double sum = 0;
+		for (int i = from; i <= to; i++) {
+			sum += data[i];
+		}
+		return sum / num;
 	}
 
 	public static int getStep() {
