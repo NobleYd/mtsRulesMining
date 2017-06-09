@@ -26,8 +26,8 @@ import utils.RunningUtils.Setting;
 /***
  * Provide three utils method to return all intraFps.
  * 
- * Provide one mergeAll method to return a map<IntraPattern,IntraPattern> intraFps by collect all
- * intraFps from different time series.
+ * Provide one mergeAll method to return a map<IntraPattern,IntraPattern> intraFps by collect all intraFps from
+ * different time series.
  * 
  * @author Yi Zhao
  */
@@ -41,7 +41,7 @@ public class IntraFpUtils {
 		for (int i = 0; i < discretizedDatas.length; i++) {
 			Map<IntraPattern, IntraPattern> intraFPs = new IntraFpFinder(discretizedDatas[i], setting.getMinSupportCount4IntraFp(), setting.getWindowSize4IntraFP()).run();
 			// merge overlap position list
-			mergedPositionList(intraFPs);
+			mergedPositionList_and_remove_not_frequent_after_merge(intraFPs, setting.getMinSupportCount4IntraFp());
 			intraFPss.add(intraFPs);
 			outputIntraFps(intraFPs, setting.getOutputFileDir(), "IntraFPs_" + i + ".txt");
 			outputIntraFpPositions(intraFPs, setting.getOutputFileDir(), "IntraFpPositions_" + i + ".txt");
@@ -58,7 +58,7 @@ public class IntraFpUtils {
 		for (int i = 0; i < discretizedDatas.length; i++) {
 			Map<IntraPattern, IntraPattern> intraFPs = new IntraClosedFpFinder(discretizedDatas[i], setting.getMinSupportCount4IntraFp(), setting.getWindowSize4IntraFP()).run();
 			// merge overlap position list
-			mergedPositionList(intraFPs);
+			intraFPs = mergedPositionList_and_remove_not_frequent_after_merge(intraFPs, setting.getMinSupportCount4IntraFp());
 			intraFPss.add(intraFPs);
 			outputIntraFps(intraFPs, setting.getOutputFileDir(), "IntraClosedFPs_" + i + ".txt");
 			outputIntraFpPositions(intraFPs, setting.getOutputFileDir(), "IntraClosedFpPositions_" + i + ".txt");
@@ -75,7 +75,7 @@ public class IntraFpUtils {
 		for (int i = 0; i < discretizedDatas.length; i++) {
 			Map<IntraPattern, IntraPattern> intraFPs = new IntraMaxFpFinder(discretizedDatas[i], setting.getMinSupportCount4IntraFp(), setting.getWindowSize4IntraFP()).run();
 			// merge overlap position list
-			mergedPositionList(intraFPs);
+			mergedPositionList_and_remove_not_frequent_after_merge(intraFPs, setting.getMinSupportCount4IntraFp());
 			intraFPss.add(intraFPs);
 			outputIntraFps(intraFPs, setting.getOutputFileDir(), "IntraMaximalFPs_" + i + ".txt");
 			outputIntraFpPositions(intraFPs, setting.getOutputFileDir(), "IntraMaximalFpPositions_" + i + ".txt");
@@ -91,11 +91,17 @@ public class IntraFpUtils {
 	 * 
 	 * @param intraFPs
 	 */
-	private static Map<IntraPattern, IntraPattern> mergedPositionList(Map<IntraPattern, IntraPattern> intraFPs) {
+	private static Map<IntraPattern, IntraPattern> mergedPositionList_and_remove_not_frequent_after_merge(Map<IntraPattern, IntraPattern> intraFPs, int minSupportCount) {
+		Map<IntraPattern, IntraPattern> mergedIntraFps = new HashMap<>();
 		for (IntraPattern intraFp : intraFPs.values()) {
 			intraFp.setPositions(mergedPositionList(intraFp));
+			if (intraFp.getPositions().size() >= minSupportCount) {
+				mergedIntraFps.put(intraFp, intraFp);
+			} else {
+				//log.info("After merge process, there is a pattern is not frequent any more, so removed.");
+			}
 		}
-		return intraFPs;
+		return mergedIntraFps;
 	}
 
 	/***
@@ -168,7 +174,7 @@ public class IntraFpUtils {
 			bw.write("Fps size: " + intraFPs.size() + System.lineSeparator());
 			for (IntraPattern intraFp : sortedIntraFPs) {
 				bw.write(intraFp + ", support: " + intraFp.getPositions().size());
-				bw.write("\t,entroy: " + EntropyFunctions.entropy(intraFp.getPattern()) + ", entroyWithOrder: " + EntropyFunctions.entropyWithOrder(intraFp.getPattern()) + System.lineSeparator());
+				bw.write("\t,entropy: " + EntropyFunctions.entropy(intraFp.getPattern()) + ", entropyWithOrder: " + EntropyFunctions.entropyWithOrder(intraFp.getPattern()) + System.lineSeparator());
 			}
 			bw.flush();
 			bw.close();

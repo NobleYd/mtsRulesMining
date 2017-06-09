@@ -14,8 +14,8 @@ public class PatternDisatanceTest {
 	@Test
 	public void testDistance() {
 		DistanceFunction<IntraPattern> levenshteinDistcance = DistanceFunction.levenshteinDistcance();
-		DistanceFunction<IntraPattern> dtwDistcance = DistanceFunction.DtwDistcance(3);
-		DistanceFunction<IntraPattern> dtw2Distcance = DistanceFunction.DtwDistcance(null);
+		DistanceFunction<IntraPattern> dtwDistcance = DistanceFunction.relativeDtwDistcance(3);
+		DistanceFunction<IntraPattern> dtw2Distcance = DistanceFunction.relativeDtwDistcance(null);
 		DistanceFunction<IntraPattern> lcsDistcance = DistanceFunction.LcsDistance(3);
 
 		List<DataObject<IntraPattern>> objs = new ArrayList<DataObject<IntraPattern>>();
@@ -25,10 +25,33 @@ public class PatternDisatanceTest {
 		for (DataObject<IntraPattern> obj1 : objs) {
 			for (DataObject<IntraPattern> obj2 : objs) {
 				System.out.println(obj1.getValue().getPattern() + " ---> " + obj2.getValue().getPattern());
-				//System.out.println("\tlev:\t" + levenshteinDistcance.distance(obj1, obj2));
-				//System.out.println("\tdtw:\t" + dtwDistcance.distance(obj1, obj2));
+				// System.out.println("\tlev:\t" + levenshteinDistcance.distance(obj1, obj2));
+				// System.out.println("\tdtw:\t" + dtwDistcance.distance(obj1, obj2));
 				System.out.println("\tdtw2:\t" + dtw2Distcance.distance(obj1, obj2));
-				//System.out.println("\tlcs:\t" + lcsDistcance.distance(obj1, obj2));
+				// System.out.println("\tlcs:\t" + lcsDistcance.distance(obj1, obj2));
+			}
+		}
+
+	}
+	
+	
+
+	@Test
+	public void testDistance2() {
+		DistanceFunction<IntraPattern> dtwDistcance = DistanceFunction.relativeDtwDistcance(3);
+		DistanceFunction<IntraPattern> dtw2Distcance = DistanceFunction.relativeDtwDistcance(null);
+
+		List<DataObject<IntraPattern>> objs = new ArrayList<DataObject<IntraPattern>>();
+		objs.add(new DataObject<IntraPattern>(new IntraPattern(0, "duuddduud")));
+		objs.add(new DataObject<IntraPattern>(new IntraPattern(0, "ddduduudd")));
+
+		for (DataObject<IntraPattern> obj1 : objs) {
+			for (DataObject<IntraPattern> obj2 : objs) {
+				System.out.println(obj1.getValue().getPattern() + " ---> " + obj2.getValue().getPattern());
+				// System.out.println("\tlev:\t" + levenshteinDistcance.distance(obj1, obj2));
+				// System.out.println("\tdtw:\t" + dtwDistcance.distance(obj1, obj2));
+				System.out.println("\tdtw2:\t" + dtw2Distcance.distance(obj1, obj2));
+				// System.out.println("\tlcs:\t" + lcsDistcance.distance(obj1, obj2));
 			}
 		}
 

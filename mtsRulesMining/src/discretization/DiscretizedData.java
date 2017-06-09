@@ -144,6 +144,11 @@ public class DiscretizedData {
 	public String getResult() {
 		return result;
 	}
+	
+	public int getLength() {
+		return result.length();
+	}
+	
 
 	public int getSeriesNumber() {
 		return seriesNumber;

@@ -45,6 +45,10 @@ public class DiscretizationUtils {
 		for (int i = 0; i < normalizedDatas.length; i++) {
 			discretizedDatas[i] = new DiscretizedData(normalizedDatas[i]);
 		}
+		
+		//此处记录一下离散化后数据点数
+		if (discretizedDatas != null && discretizedDatas.length > 0)
+			setting.dataNumber = discretizedDatas[0].getResult().length();
 
 		log.info("end---end---end---end---end---end---end---end---end---end---end---");
 		outputDiscretizedDatas(discretizedDatas, setting.getOutputFileDir());

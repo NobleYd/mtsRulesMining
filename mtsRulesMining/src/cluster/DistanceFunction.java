@@ -89,7 +89,16 @@ public interface DistanceFunction<T> {
 	 * @param restrict
 	 *            参数restrict表示匹配的俩个字符之间的最大距离。
 	 */
-	public static DistanceFunction<IntraPattern> DtwDistcance(Integer restrict0) {
+	public static DistanceFunction<IntraPattern> relativeDtwDistcance(Integer restrict0) {
+		return relativeDtwDistcance(restrict0, 0, 2, 2);
+	}
+
+	// 动态时间弯曲距离 DTW Distcance
+	/***
+	 * @param restrict
+	 *            参数restrict表示匹配的俩个字符之间的最大距离。
+	 */
+	public static DistanceFunction<IntraPattern> relativeDtwDistcance(Integer restrict0, Integer cost_same, Integer cost_up_down, Integer cost_level_up_or_level_down) {
 		// null表示不限制
 		int restrict;
 		if (restrict0 == null) {
@@ -122,13 +131,12 @@ public interface DistanceFunction<T> {
 				if (i + w > 0 && i + w < to)
 					to = i + w;
 				for (int j = from; j <= to; j++) {
-					double cost = 2;
+					double cost = cost_up_down;
 					if (p1.charAt(i - 1) == p2.charAt(j - 1)) {
-						cost = 0;
-					} 
-//					else if (p1.charAt(i - 1) == 'l' || p2.charAt(j - 1) == 'l') {
-//						cost = 1.5;
-//					}
+						cost = cost_same;
+					} else if (p1.charAt(i - 1) == 'l' || p2.charAt(j - 1) == 'l') {
+						cost = cost_level_up_or_level_down;
+					}
 
 					dtw[i][j] = cost + dtw[i - 1][j - 1];
 					if (cost + dtw[i - 1][j] < dtw[i][j]) {
@@ -140,6 +148,64 @@ public interface DistanceFunction<T> {
 				}
 			}
 			return (dtw[p1.length()][p2.length()] * 2) / (p1.length() + p2.length());
+		};
+	}
+
+	// 动态时间弯曲距离 DTW Distcance
+	/***
+	 * @param restrict
+	 *            参数restrict表示匹配的俩个字符之间的最大距离。
+	 */
+	public static DistanceFunction<IntraPattern> dtwDistcance(Integer restrict0, Integer cost_same, Integer cost_up_down, Integer cost_level_up_or_level_down) {
+		// null表示不限制
+		int restrict;
+		if (restrict0 == null) {
+			restrict = Integer.MAX_VALUE;
+		} else {
+			restrict = restrict0;
+		}
+		return (AbstractDataObject<IntraPattern> a, AbstractDataObject<IntraPattern> b) -> {
+			String p1 = a.getValue().getPattern();
+			String p2 = b.getValue().getPattern();
+
+			// w = max{w,abs(n-m)}
+			int w = Math.abs(p1.length() - p2.length());
+			if (restrict > w)
+				w = restrict;
+
+			double[][] dtw = new double[p1.length() + 1][p2.length() + 1];
+			for (int i = 0; i <= p1.length(); i++) {
+				for (int j = 0; j <= p2.length(); j++) {
+					dtw[i][j] = Integer.MAX_VALUE;
+				}
+			}
+			dtw[0][0] = 0;
+
+			for (int i = 1; i <= p1.length(); i++) {
+				int from = 1;
+				if (i - w > from)
+					from = i - w;
+				int to = p2.length();
+				if (i + w > 0 && i + w < to)
+					to = i + w;
+				for (int j = from; j <= to; j++) {
+					double cost = cost_up_down;
+					if (p1.charAt(i - 1) == p2.charAt(j - 1)) {
+						cost = cost_same;
+					} else if (p1.charAt(i - 1) == 'l' || p2.charAt(j - 1) == 'l') {
+						cost = cost_level_up_or_level_down;
+					}
+
+					dtw[i][j] = cost + dtw[i - 1][j - 1];
+					if (cost + dtw[i - 1][j] < dtw[i][j]) {
+						dtw[i][j] = cost + dtw[i - 1][j];
+					}
+					if (cost + dtw[i][j - 1] < dtw[i][j]) {
+						dtw[i][j] = cost + dtw[i][j - 1];
+					}
+				}
+			}
+			return dtw[p1.length()][p2.length()];
 		};
 	}
 

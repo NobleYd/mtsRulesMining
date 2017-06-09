@@ -103,7 +103,7 @@ public class PatternFilterUtils {
 			bw.write("Fps size: " + intraFPs.size() + System.lineSeparator());
 			for (IntraPattern intraFp : sortedIntraFPs) {
 				bw.write(intraFp + ", support: " + intraFp.getPositions().size() + System.lineSeparator());
-				bw.write("\tentroy: " + EntropyFunctions.entropy(intraFp.getPattern()) + ", entroyWithOrder: " + EntropyFunctions.entropyWithOrder(intraFp.getPattern()) + System.lineSeparator());
+				bw.write("\tentropy: " + EntropyFunctions.entropy(intraFp.getPattern()) + ", entropyWithOrder: " + EntropyFunctions.entropyWithOrder(intraFp.getPattern()) + System.lineSeparator());
 			}
 			bw.flush();
 			bw.close();

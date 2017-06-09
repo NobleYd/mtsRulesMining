@@ -55,7 +55,7 @@ public class HierarchicalCluster<T> extends AbstractClusterMethod<T, ClusterSet<
 			clusterSet.initDistanceMatrix();
 
 			// start cluster
-			while (clusterSet.size() >= 2 && clusterSet.nextClosestDistance() < distanceRestric) {
+			while (clusterSet.size() >= 2 && clusterSet.nextClosestDistance() <= distanceRestric) {
 				round++;
 				clusterSet.mergeTheClosestCluster();
 			}

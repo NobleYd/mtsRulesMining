@@ -2,6 +2,7 @@ package utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,10 +37,6 @@ public class CommonUtils {
 		ExcelData excelData = null;
 		try {
 			excelData = ExcelData.buildFromFile(inputFile, "Sheet1");
-
-			if (excelData.getData() != null && excelData.getData().length > 0)
-				setting.dataNumber = excelData.getData()[0].length;
-
 			log.info("excel read finshed.");
 		} catch (Exception e) {
 			log.error("ExcelData.buildFromFile() failed.");
@@ -73,15 +70,10 @@ public class CommonUtils {
 		if (clusterSets == null || clusterSets.size() == 0) {
 			clusteredIntraFPss = filteredIntraFpss;
 		} else {
-			// 此处加个特殊判断，如果setting中俩个minSupport一致则不进行filter
-			// 否则此处进行一次filter
-			// 不相等意味着我们找模式给定了一个比较小的minSup4Intra。而实际用的时候minSup更大些，所以需要进行filter。
-			if (setting.getMinSupportCount() > setting.getMinSupportCount4IntraFp()) {
-				log.info("Filter clusters. with support count = " + setting.getMinSupportCount() + ", sup4intra is " + setting.getMinSupportCount4IntraFp());
-				clusterSets = PatternFilterUtils.filteredClusterSets(clusterSets, PatternFilter.minSupportFilter(setting.getMinSupportCount()), setting.getOutputFileDir());
-			} else {
-				log.info("minSupport all the same, no filter for clusters.");
-			}
+			// 此处加了filter，因为cluster的position list merge可能导致不再是频繁（注意此处说法不一定对，但是是为了统一，因为intra patterns
+			// merge的时候是肯定有可能导致不频繁的。cluster的merge还不一定。）
+			log.info("Filter clusters. with support count = " + setting.getMinSupportCount() + ", sup4intra is " + setting.getMinSupportCount4IntraFp());
+			clusterSets = PatternFilterUtils.filteredClusterSets(clusterSets, PatternFilter.minSupportFilter(setting.getMinSupportCount()), setting.getOutputFileDir());
 
 			clusteredIntraFPss = ClusterUtils.transformEachClusterSet2Map(clusterSets, setting);
 		}

@@ -91,17 +91,17 @@ public class TestAirQualityUCI {
 						// set pattern filter
 						.setPatternFilter(
 								// FilterDescription (for log)
-								"EntroyWithOrder(entroy >= 0.1)",
+								"EntropyWithOrder(Entropy >= 0.1)",
 								// The filter
 								(PatternFilter.entropyFilter(
-										// Entroy function
+										// Entropy function
 										EntropyFunctions::entropyWithOrder,
-										// The entroy limit value
+										// The Entropy limit value
 										0.1)//
 								)//
 						)//
 							// .setClusterDistanceFunction("LcsDistanceFunction r=3", DistanceFunction.LcsDistance(3))//
-						.setClusterDistanceFunction("DtwDistcance r=null", DistanceFunction.DtwDistcance(null))//
+						.setClusterDistanceFunction("DtwDistcance r=null", DistanceFunction.relativeDtwDistcance(null))//
 						.setUsingHierarchicalClusterMethod(0.1, HierarchicalClusterType.completeLink);
 
 		RunningUtils.run(setting);
@@ -113,7 +113,7 @@ public class TestAirQualityUCI {
 	 */
 	@Test
 	public void test1() {
-		outputFileDir = outputDirPrefix + "1";
+		outputFileDir = outputDirPrefix + "6";
 
 		minSupportCount = 90;
 		// 考虑3小时一个点
@@ -135,23 +135,23 @@ public class TestAirQualityUCI {
 						// set pattern filter
 						.setPatternFilter(
 								// FilterDescription (for log)
-								"EntroyWithOrder(entroy >= 0.1)",
+								"EntropyWithOrder(Entropy >= 0.1)",
 								// The filter
 								(PatternFilter.entropyFilter(
-										// Entroy function
+										// Entropy function
 										EntropyFunctions::entropyWithOrder,
-										// The entroy limit value
+										// The Entropy limit value
 										0.1)//
 								)//
 						)//
 							// .setClusterDistanceFunction("LcsDistanceFunction r=3", DistanceFunction.LcsDistance(3))//
-						.setClusterDistanceFunction("DtwDistcance r=null", DistanceFunction.DtwDistcance(null))//
+						.setClusterDistanceFunction("DtwDistcance r=null", DistanceFunction.relativeDtwDistcance(null))//
 						.setUsingHierarchicalClusterMethod(0.1, HierarchicalClusterType.completeLink);
 
 		RunningUtils.run(setting);
 
 	}
-
+	
 	/***
 	 * 使用基于test0的方案试运行。
 	 */
@@ -182,17 +182,17 @@ public class TestAirQualityUCI {
 						// set pattern filter
 						.setPatternFilter(
 								// FilterDescription (for log)
-								"EntroyWithOrder(entroy >= 0.1)",
+								"EntropyWithOrder(Entropy >= 0.1)",
 								// The filter
 								(PatternFilter.entropyFilter(
-										// Entroy function
+										// Entropy function
 										EntropyFunctions::entropyWithOrder,
-										// The entroy limit value
+										// The Entropy limit value
 										0.1)//
 								)//
 						)//
 							// .setClusterDistanceFunction("LcsDistanceFunction r=3", DistanceFunction.LcsDistance(3))//
-						.setClusterDistanceFunction("DtwDistcance r=null", DistanceFunction.DtwDistcance(null))//
+						.setClusterDistanceFunction("DtwDistcance r=null", DistanceFunction.relativeDtwDistcance(null))//
 						.setUsingHierarchicalClusterMethod(0.1, HierarchicalClusterType.completeLink);
 
 		RunningUtils.run(setting);
@@ -226,17 +226,17 @@ public class TestAirQualityUCI {
 						// set pattern filter
 						.setPatternFilter(
 								// FilterDescription (for log)
-								"EntroyWithOrder(entroy >= 0.1)",
+								"EntropyWithOrder(Entropy >= 0.1)",
 								// The filter
 								(PatternFilter.entropyFilter(
-										// Entroy function
+										// Entropy function
 										EntropyFunctions::entropyWithOrder,
-										// The entroy limit value
+										// The Entropy limit value
 										0.1)//
 								)//
 						)//
 							// .setClusterDistanceFunction("LcsDistanceFunction r=3", DistanceFunction.LcsDistance(3))//
-						.setClusterDistanceFunction("DtwDistcance r=null", DistanceFunction.DtwDistcance(null))//
+						.setClusterDistanceFunction("DtwDistcance r=null", DistanceFunction.relativeDtwDistcance(null))//
 						.setUsingHierarchicalClusterMethod(0.1, HierarchicalClusterType.completeLink);
 
 		RunningUtils.run(setting);
@@ -269,17 +269,17 @@ public class TestAirQualityUCI {
 						// set pattern filter
 						.setPatternFilter(
 								// FilterDescription (for log)
-								"EntroyWithOrder(entroy >= 0.1)",
+								"EntropyWithOrder(Entropy >= 0.1)",
 								// The filter
 								(PatternFilter.entropyFilter(
-										// Entroy function
+										// Entropy function
 										EntropyFunctions::entropyWithOrder,
-										// The entroy limit value
+										// The Entropy limit value
 										0.1)//
 								)//
 						)//
 							// .setClusterDistanceFunction("LcsDistanceFunction r=3", DistanceFunction.LcsDistance(3))//
-						.setClusterDistanceFunction("DtwDistcance r=null", DistanceFunction.DtwDistcance(null))//
+						.setClusterDistanceFunction("DtwDistcance r=null", DistanceFunction.relativeDtwDistcance(null))//
 						.setUsingHierarchicalClusterMethod(0.1, HierarchicalClusterType.completeLink);
 
 		RunningUtils.run(setting);
@@ -287,6 +287,7 @@ public class TestAirQualityUCI {
 	
 	/****
 	 * 正常方案，minsupport=45。
+	 * ==>论文当前举例用 -- > 2017-5-4
 	 */
 	@Test
 	public void test5() {
@@ -312,22 +313,110 @@ public class TestAirQualityUCI {
 						// set pattern filter
 						.setPatternFilter(
 								// FilterDescription (for log)
-								"EntroyWithOrder(entroy >= 0.1)",
+								"EntropyWithOrder(Entropy >= 0.1)",
 								// The filter
 								(PatternFilter.entropyFilter(
-										// Entroy function
+										// Entropy function
 										EntropyFunctions::entropyWithOrder,
-										// The entroy limit value
+										// The Entropy limit value
 										0.1)//
 								)//
 						)//
 							// .setClusterDistanceFunction("LcsDistanceFunction r=3", DistanceFunction.LcsDistance(3))//
-						.setClusterDistanceFunction("DtwDistcance r=null", DistanceFunction.DtwDistcance(null))//
+						.setClusterDistanceFunction("DtwDistcance r=null", DistanceFunction.relativeDtwDistcance(null))//
 						.setUsingHierarchicalClusterMethod(0.1, HierarchicalClusterType.completeLink);
 
 		RunningUtils.run(setting);
 	}
+	/***
+	 * 测试 maxTimeInterval= 4
+	 */
+	@Test
+	public void test6() {
+		outputFileDir = outputDirPrefix + "1";
 
+		minSupportCount = 90;
+		// 考虑3小时一个点
+		step = 3;
+		// 如果按照一天24小时，除以step为24个点PAA后的点数，段数 24/step。
+		windowSize4IntraFP = 8;
+		// maxT的设置个人觉得应该比windowSize小合理些。
+		maxTimeInterval = 4;
+
+		Setting setting =
+				// get current setting
+				getCurrentSetting()
+						// set outputFileDir
+						.setOutputFileDir(outputFileDir)
+						// set intraFp type
+						.setIntraFpType(IntraFpType.closedFp)
+						// set discretizationType
+						.setDefaultDiscretizationType(DiscretizationType.upDownLevel)
+						// set pattern filter
+						.setPatternFilter(
+								// FilterDescription (for log)
+								"EntropyWithOrder(Entropy >= 0.1)",
+								// The filter
+								(PatternFilter.entropyFilter(
+										// Entropy function
+										EntropyFunctions::entropyWithOrder,
+										// The Entropy limit value
+										0.1)//
+								)//
+						)//
+							// .setClusterDistanceFunction("LcsDistanceFunction r=3", DistanceFunction.LcsDistance(3))//
+						.setClusterDistanceFunction("DtwDistcance r=null", DistanceFunction.relativeDtwDistcance(null))//
+						.setUsingHierarchicalClusterMethod(0.1, HierarchicalClusterType.completeLink);
+
+		RunningUtils.run(setting);
+
+	}
+	
+	/***
+	 * 测试不聚类情况。
+	 */
+	@Test
+	public void test7() {
+		outputFileDir = outputDirPrefix + "1";
+
+		minSupportCount = 90;
+		// 考虑3小时一个点
+		step = 3;
+		// 如果按照一天24小时，除以step为24个点PAA后的点数，段数 24/step。
+		windowSize4IntraFP = 8;
+		// maxT的设置个人觉得应该比windowSize小合理些。
+		maxTimeInterval = 4;
+
+		Setting setting =
+				// get current setting
+				getCurrentSetting()
+						// set outputFileDir
+						.setOutputFileDir(outputFileDir)
+						// set intraFp type
+						.setIntraFpType(IntraFpType.closedFp)
+						// set discretizationType
+						.setDefaultDiscretizationType(DiscretizationType.upDownLevel)
+						// set pattern filter
+						.setPatternFilter(
+								// FilterDescription (for log)
+								"EntropyWithOrder(Entropy >= 0.1)",
+								// The filter
+								(PatternFilter.entropyFilter(
+										// Entropy function
+										EntropyFunctions::entropyWithOrder,
+										// The Entropy limit value
+										0.1)//
+								)//
+						)//
+							// .setClusterDistanceFunction("LcsDistanceFunction r=3", DistanceFunction.LcsDistance(3))//
+						.setClusterDistanceFunction("DtwDistcance r=null", DistanceFunction.relativeDtwDistcance(null))//
+						.setUsingHierarchicalClusterMethod(0.0, HierarchicalClusterType.completeLink);
+
+		RunningUtils.run(setting);
+
+	}
+	
+	
 	/***
 	 * Construct the setting according current settings and return the setting object.
 	 */
